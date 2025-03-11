@@ -1,0 +1,106 @@
+--// Blox Fruits Script with UI
+local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
+local Window = Library.CreateLib("Shadow Hub - Blox Fruits", "DarkTheme")
+
+-- Tabs
+local FarmTab = Window:NewTab("Auto Farm")
+local PvpTab = Window:NewTab("PvP")
+local RaidTab = Window:NewTab("Raid")
+local MiscTab = Window:NewTab("Misc")
+
+-- Sections
+local FarmSection = FarmTab:NewSection("Auto Farm")
+local PvpSection = PvpTab:NewSection("PvP")
+local RaidSection = RaidTab:NewSection("Auto Raid")
+local MiscSection = MiscTab:NewSection("Misc Features")
+
+--// Auto Farm Level
+local autoFarm = false
+FarmSection:NewToggle("Auto Farm Level", "Tự động farm level", function(state)
+    autoFarm = state
+    while autoFarm do
+        if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            teleportTo(Vector3.new(100, 10, 100)) -- Replace with actual position
+            fastAttack()
+        end
+        wait(1)
+    end
+end)
+
+--// Fast Attack
+local fastAttackEnabled = false
+PvpSection:NewToggle("Fast Attack", "Đánh nhanh hơn", function(state)
+    fastAttackEnabled = state
+    while fastAttackEnabled do
+        virtualInputManager:SendKeyEvent(true, "E", false, game)
+        wait(0.05)
+        virtualInputManager:SendKeyEvent(false, "E", false, game)
+    end
+end)
+
+--// Kill Nearest Player
+local killPlayer = false
+PvpSection:NewToggle("Kill Nearest Player", "Tự động giết người gần nhất", function(state)
+    killPlayer = state
+    while killPlayer do
+        local nearestPlayer = nil
+        local shortestDistance = math.huge
+        for _, otherPlayer in pairs(players:GetPlayers()) do
+            if otherPlayer ~= player and otherPlayer.Character and otherPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                local distance = (player.Character.HumanoidRootPart.Position - otherPlayer.Character.HumanoidRootPart.Position).magnitude
+                if distance < shortestDistance then
+                    shortestDistance = distance
+                    nearestPlayer = otherPlayer
+                end
+            end
+        end
+        if nearestPlayer then
+            teleportTo(nearestPlayer.Character.HumanoidRootPart.Position)
+            fastAttack()
+        end
+        wait(0.5)
+    end
+end)
+
+--// Auto Skill
+local autoSkill = false
+PvpSection:NewToggle("Auto Skill", "Tự động dùng kỹ năng", function(state)
+    autoSkill = state
+    while autoSkill do
+        local skillKeys = {"Z", "X", "C", "V", "B"}
+        for _, key in ipairs(skillKeys) do
+            virtualInputManager:SendKeyEvent(true, key, false, game)
+            wait(0.2)
+            virtualInputManager:SendKeyEvent(false, key, false, game)
+        end
+        wait(1)
+    end
+end)
+
+--// Auto Raid
+local autoRaid = false
+RaidSection:NewToggle("Auto Raid", "Tự động raid boss", function(state)
+    autoRaid = state
+    while autoRaid do
+        if isAlive() then
+            -- Tìm boss gần nhất
+            local nearestBoss = nil
+            local shortestDistance = math.huge
+            for _, npc in pairs(workspace:GetChildren()) do
+                if npc:IsA("Model") and npc:FindFirstChild("HumanoidRootPart") and npc:FindFirstChild("Humanoid") and npc.Humanoid.Health > 0 then
+                    local distance = (player.Character.HumanoidRootPart.Position - npc.HumanoidRootPart.Position).magnitude
+                    if distance < shortestDistance then
+                        shortestDistance = distance
+                        nearestBoss = npc
+                    end
+                end
+            end
+            -- Dịch chuyển và đánh boss
+            if nearestBoss then
+                teleportTo(nearestBoss.HumanoidRootPart.Position)
+                fastAttack()
+            end
+        end
+        wait(1)
+    end
+end)
