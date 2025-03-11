@@ -1,6 +1,22 @@
---// Blox Fruits Script with UI
+--// Blox Fruits Script with UI (Có Icon Trái Leo)
 local Library = loadstring(game:HttpGet("https://raw.githubusercontent.com/xHeptc/Kavo-UI-Library/main/source.lua"))()
 local Window = Library.CreateLib("Shadow Hub - Blox Fruits", "DarkTheme")
+
+-- Tạo Nút Icon Trái Leo
+local ScreenGui = Instance.new("ScreenGui")
+local ImageButton = Instance.new("ImageButton")
+ScreenGui.Parent = game.CoreGui
+ImageButton.Parent = ScreenGui
+ImageButton.Image = "rbxassetid://4819605125" -- ID của icon trái leo
+ImageButton.Size = UDim2.new(0, 100, 0, 100)
+ImageButton.Position = UDim2.new(0, 10, 0, 10)
+ImageButton.BackgroundTransparency = 1
+
+local guiVisible = false
+ImageButton.MouseButton1Click:Connect(function()
+    guiVisible = not guiVisible
+    Window:ToggleUI(guiVisible)
+end)
 
 -- Tabs
 local FarmTab = Window:NewTab("Auto Farm")
